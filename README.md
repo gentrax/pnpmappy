@@ -1,4 +1,4 @@
-<img width="2556" height="902" alt="image" src="https://github.com/user-attachments/assets/54e531b6-c328-4a5b-bdfd-782203735cac" />Interaktives Karten-Tool für Pen-&-Paper-Runden
+Interaktives Karten-Tool für Pen-&-Paper-Runden
 
 Ein eigenständiges, browserbasiertes Karten-Tool für Spielleiter:innen (GM). Lade eine beliebige Karte als Bild, setze nummerierte **Marker**, zeichne **Gebiete & Grenzen**, ordne alles über eine **Legende** mit Kategorien, miss **Distanzen** auf einem pro Karte geeichten Maßstab – und gib deiner Crew/Spielern einen abgespeckten **Spieler-Modus**.
 
