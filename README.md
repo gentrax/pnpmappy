@@ -14,17 +14,16 @@ https://gentrax.github.io/pnpmappy/ hier kann getestet werden.
 
 ## Features
 
-- 🗺️ **Karte laden** per Datei-Upload oder Drag-&-Drop (JPG/PNG)
-- 📍 **Marker** setzen, benennen, kategorisieren, mit Notiz versehen, verschieben & löschen
-- 🟧 **Gebiete** (gefüllte Flächen) und **Grenzen / Linien** (gestrichelt) einzeichnen
-- 🏷️ **Legende** mit frei definierbaren Kategorien (Farbe + Ein-/Ausblenden je Kategorie)
-- 📏 **Distanzmessung** – einmalig am Maßstabsbalken eichen, dann über die ganze Karte messen
-- 🎨 **Themes** umschaltbar: *Sixth World* (Cyberpunk) & *Fantasy* (Pergament/Gold)
-- 👥 **GM- und Runner-Modus** – Spieler:innen sehen eine reduzierte, nicht editierbare Ansicht
-- 💾 **Import/Export** als JSON (inkl. eingebetteter Karte) – jede Karte ist ein eigenständiges Savefile
-- 🖼️ **Bild-Export (JPG)** der Karte inkl. aller sichtbaren Marker & Zonen – ideal als Handout
-- ✏️ Editierbarer **Titel & Untertitel**
-- 🌐 **GitHub-Pages-tauglich**: lädt beim Start automatisch eine passende JSON aus demselben Ordner
+- **Karte laden** per Datei-Upload oder Drag-&-Drop (JPG/PNG)
+- **Marker** setzen, benennen, kategorisieren, mit Notiz versehen, verschieben & löschen
+- **Gebiete** (gefüllte Flächen) und **Grenzen / Linien** (gestrichelt) einzeichnen
+- **Legende** mit frei definierbaren Kategorien (Farbe + Ein-/Ausblenden je Kategorie)
+- **Distanzmessung** – einmalig am Maßstabsbalken eichen, dann über die ganze Karte messen
+- **Themes** umschaltbar: *Sixth World* (Cyberpunk) & *Fantasy* (Pergament/Gold)
+- **GM- und Runner-Modus** – Spieler:innen sehen eine reduzierte, nicht editierbare Ansicht
+- **Import/Export** als JSON (inkl. eingebetteter Karte) – jede Karte ist ein eigenständiges Savefile
+- **Bild-Export (JPG)** der Karte inkl. aller sichtbaren Marker & Zonen – ideal als Handout
+- Editierbarer **Titel & Untertitel**
 
 ---
 
