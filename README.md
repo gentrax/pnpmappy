@@ -27,15 +27,9 @@ Ursprünglich für eine Shadowrun-Hamburg-Kampagne gebaut, funktioniert das Tool
 ## Schnellstart
 
 ### Lokal
-1. `shadowrun-hamburg.html` herunterladen.
+1. `index.html` herunterladen.
 2. Doppelklick → öffnet sich im Browser.
 3. **KARTE** klicken und ein Kartenbild laden – oder eine fertige `*.json` über **IMPORT** öffnen.
-
-### Über GitHub Pages hosten
-1. Repository anlegen und `shadowrun-hamburg.html` hochladen.
-2. Optional: eine deiner Konfigurationen in `shadowrun-hamburg.json` umbenennen und daneben ablegen – diese wird beim Aufruf **automatisch geladen**.
-3. In den Repo-Einstellungen unter **Settings → Pages** den Branch (z. B. `main`, Ordner `/root`) als Quelle wählen.
-4. Die Seite ist dann unter `https://<dein-name>.github.io/<repo>/shadowrun-hamburg.html` erreichbar.
 
 > Tipp: Für eine reine Spieler-Ansicht den Link teilen und in den **Runner**-Modus wechseln lassen – Bearbeitungs-Buttons sind dort ausgeblendet.
 
