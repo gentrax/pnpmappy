@@ -40,7 +40,7 @@ Symbole für Kategorien
 2. Doppelklick → öffnet sich im Browser.
 3. **KARTE** klicken und ein Kartenbild laden – oder eine fertige `*.json` über **IMPORT** öffnen.
 
-> Tipp: Für eine reine Spieler-Ansicht den Link teilen und in den **Runner**-Modus wechseln lassen – Bearbeitungs-Buttons sind dort ausgeblendet.
+> Tipp: Für eine reine Spieler-Ansicht den Link teilen und in den **Spieler**-Modus wechseln lassen – Bearbeitungs-Buttons sind dort ausgeblendet.
 
 ### Online
 Quelle so angeben:
@@ -61,7 +61,7 @@ aktives Beispiele:
 | Modus | Zweck |
 |-------|-------|
 | **GM** | Voller Zugriff: Marker/Zonen anlegen & bearbeiten, Kategorien, Karte laden, Maßstab eichen, Titel ändern |
-| **Runner** | Nur ansehen, zoomen, Kategorien ein-/ausblenden und **messen** |
+| **Spieler** | Nur ansehen, zoomen, Kategorien ein-/ausblenden und **messen** |
 
 ### Werkzeuge (Werkzeugleiste oben)
 - **MARKER** – auf die Karte klicken, um einen Punkt zu setzen
