@@ -8,7 +8,9 @@ Ursprünglich für eine Shadowrun-Hamburg-Kampagne gebaut, funktioniert das Tool
 
 https://gentrax.github.io/pnpmappy/ hier kann getestet werden.
 
-<img width="2556" height="902" alt="image" src="https://github.com/user-attachments/assets/5054c670-d11f-440b-8a15-fdd68ebf5a8a" />
+<img width="2003" height="896" alt="image" src="https://github.com/user-attachments/assets/bfd21b0c-b564-4255-80f1-7557068b0405" />
+
+---
 
 Symbole für Kategorien 
 
