@@ -2,8 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SR // HAMBURG GRID</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>P&P // Map Tool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=MedievalSharp&display=swap" rel="stylesheet">
@@ -117,7 +120,7 @@
   ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}::-webkit-scrollbar-thumb:hover{background:var(--cyan)}
 
   .stage{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 50%,#0b121b,#05080c)}
-  #viewport{position:absolute;inset:0;cursor:grab;overflow:hidden}
+  #viewport{position:absolute;inset:0;cursor:grab;overflow:hidden;touch-action:none}
   #viewport.panning{cursor:grabbing}
   #viewport.placing,#viewport.drawing{cursor:crosshair}
   #world{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
@@ -195,6 +198,26 @@
   .modal-foot .toolbtn.primary:hover{background:rgba(0,229,255,.18)}
   .colorrow{display:flex;gap:8px;align-items:center}
   .colorrow input[type=color]{width:46px;height:38px;padding:2px;background:var(--bg);border:1px solid var(--line2);border-radius:3px;cursor:pointer}
+  /* ---- icon picker ---- */
+  .iconpick{display:flex;flex-wrap:wrap;gap:6px;max-height:168px;overflow-y:auto;padding:2px}
+  .iconbtn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--bg);
+    border:1px solid var(--line2);border-radius:4px;cursor:pointer;padding:0;transition:.12s}
+  .iconbtn svg{width:22px;height:22px;display:block}
+  .iconbtn:hover{border-color:var(--txt-dim)}
+  .iconbtn.sel{border-color:var(--cyan);box-shadow:0 0 10px -2px var(--cyan);background:rgba(0,229,255,.08)}
+  .optrow{display:flex;flex-wrap:wrap;gap:7px}
+  .opttoggle{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--txt-dim);background:var(--bg);
+    border:1px solid var(--line2);padding:8px 11px;border-radius:3px;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:7px}
+  .opttoggle::before{content:"";width:11px;height:11px;border:1px solid var(--line2);border-radius:2px;flex:none;transition:.12s}
+  .opttoggle:hover{border-color:var(--txt-dim);color:var(--txt)}
+  .opttoggle.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+  .opttoggle.on::before{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  /* icon inside legend dot / list row / popup */
+  .legend-dot.has-ic::after{display:none}
+  .legend-dot .di{position:absolute;inset:0;width:100%;height:100%}
+  .pinrow .pr-ic{width:13px;height:13px;flex:none}
+  .popup-top .d.has-ic{position:relative}
+  .popup-top .d .di{position:absolute;inset:0;width:100%;height:100%}
 
   .popup{position:absolute;z-index:80;width:260px;background:linear-gradient(180deg,var(--panel),var(--bg2));
     border:1px solid var(--line2);border-radius:5px;box-shadow:0 18px 50px rgba(0,0,0,.7);display:none;overflow:hidden;animation:modalin .14s ease-out}
@@ -213,7 +236,37 @@
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
   .gm-only{display:inline-flex}
   body.player-mode .gm-only{display:none!important}
-  @media(max-width:720px){.main{grid-template-columns:1fr!important}aside{position:absolute;z-index:60;width:280px;height:100%}.brand .sub{display:none}}
+  /* ===== responsive / mobile ===== */
+  .mobile-only{display:none!important}
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(3,5,8,.55);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
+  @media(max-width:760px){
+    .toolbtn{touch-action:manipulation}
+    header{gap:8px;padding:0 10px;height:52px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    header::-webkit-scrollbar{display:none}
+    .brand .sr{font-size:15px;letter-spacing:1.5px}
+    .brand .sub{display:none}
+    .spacer{flex:0 0 2px}
+    .toolbtn{padding:8px 9px;flex:none}
+    .toolbtn span[data-i18n]{display:none}      /* icon-only action buttons */
+    #themeLabel{display:none}
+    .mobile-only{display:inline-flex!important}
+    .main{grid-template-columns:1fr}
+    aside{position:fixed;top:52px;left:0;bottom:0;width:min(84vw,320px);z-index:60;
+      transform:translateX(-100%);transition:transform .22s ease;border-right:1px solid var(--line2)}
+    body.drawer-open aside{transform:none;box-shadow:0 0 40px rgba(0,0,0,.6)}
+    body.drawer-open .drawer-backdrop{opacity:1;pointer-events:auto}
+    .zoomctl{right:10px;bottom:10px}
+    .zoomctl button{width:42px;height:42px}
+    .measbox{left:10px;bottom:10px;right:10px;min-width:0}
+    .place-banner{font-size:10px;letter-spacing:.5px;padding:7px 10px;max-width:94vw;text-align:center;white-space:normal}
+    .hud{font-size:10px}
+    .modal{max-width:none;max-height:88vh;display:flex;flex-direction:column}
+    .modal-body{overflow-y:auto}
+    .overlay{padding:10px;align-items:flex-end}
+    .iconpick{max-height:130px}
+  }
+  @media(max-width:380px){ .brand .sr{font-size:13px} .toolbtn{padding:7px} }
+  @media(max-width:720px){.main{grid-template-columns:1fr}}
   .measbox{position:absolute;left:14px;bottom:14px;z-index:7;display:none;min-width:190px;
     background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;
     box-shadow:0 8px 26px rgba(0,0,0,.5);font-family:var(--mono)}
@@ -232,65 +285,69 @@
 <body class="show-labels">
 <div class="app">
   <header>
-    <div class="brand"><span class="sr" id="brandTitle" spellcheck="false" title="Titel bearbeiten (GM)">SR//HAMBURG</span><span class="sub" id="brandSub" spellcheck="false">SIXTH WORLD GRID v3</span><span class="tag" id="modeTag">GM</span></div>
+    <button class="toolbtn mobile-only" id="btnPanel" title="Legende &amp; Objekte" aria-label="Panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="brand"><span class="sr" id="brandTitle" spellcheck="false" data-i18n-title="tipTitleEdit" title="Titel bearbeiten (GM)">PEN &amp; PAPER</span><span class="sub" id="brandSub" spellcheck="false">MAP // GRID</span><span class="tag" id="modeTag">GM</span></div>
     <div class="spacer"></div>
-    <div class="mode-switch" title="Modus">
+    <div class="mode-switch" data-i18n-title="tipMode" title="Modus">
       <button data-mode="gm" class="active" id="btnGm">GM</button>
-      <button data-mode="player" id="btnPlayer">SPIELER</button>
+      <button data-mode="player" id="btnPlayer"><span data-i18n="modePlayerSwitch">SPIELER</span></button>
     </div>
+    <button class="toolbtn" id="btnLang" title="Sprache / Language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span id="langLabel">DE</span></button>
     <div class="sep gm-only"></div>
-    <button class="toolbtn gm-only" id="btnPin" title="Marker setzen (A)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>MARKER</button>
-    <button class="toolbtn gm-only" id="btnArea" title="Gebiet einzeichnen (G)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7 9 4l6 3 5-2v12l-5 2-6-3-5 2Z"/></svg>GEBIET</button>
-    <button class="toolbtn gm-only" id="btnLine" title="Grenze / Linie ziehen (L)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18 9 7l4 6 7-9"/><circle cx="3" cy="18" r="1.6" fill="currentColor"/><circle cx="20" cy="4" r="1.6" fill="currentColor"/></svg>GRENZE</button>
-    <button class="toolbtn" id="btnMeasure" title="Distanz messen (M)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 17 3l4 4L7 21Z"/><path d="M8 8l2 2M11 5l2 2M5 11l2 2M14 14l2 2"/></svg>MESSEN</button>
+    <button class="toolbtn gm-only" id="btnPin" data-i18n-title="tipMarker" title="Marker setzen (A)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span data-i18n="btnMarker">MARKER</span></button>
+    <button class="toolbtn gm-only" id="btnArea" data-i18n-title="tipArea" title="Gebiet einzeichnen (G)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7 9 4l6 3 5-2v12l-5 2-6-3-5 2Z"/></svg><span data-i18n="btnArea">GEBIET</span></button>
+    <button class="toolbtn gm-only" id="btnLine" data-i18n-title="tipLine" title="Grenze / Linie ziehen (L)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18 9 7l4 6 7-9"/><circle cx="3" cy="18" r="1.6" fill="currentColor"/><circle cx="20" cy="4" r="1.6" fill="currentColor"/></svg><span data-i18n="btnLine">GRENZE</span></button>
+    <button class="toolbtn" id="btnMeasure" data-i18n-title="tipMeasure" title="Distanz messen (M)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 17 3l4 4L7 21Z"/><path d="M8 8l2 2M11 5l2 2M5 11l2 2M14 14l2 2"/></svg><span data-i18n="btnMeasure">MESSEN</span></button>
     <div class="sep gm-only"></div>
-    <button class="toolbtn gm-only" id="btnMap" title="Karte laden">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>KARTE</button>
-    <button class="toolbtn gm-only" id="btnImport" title="JSON-Daten laden">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M12 3v13"/><path d="m7 8 5-5 5 5"/></svg>IMPORT</button>
+    <button class="toolbtn gm-only" id="btnMap" data-i18n-title="tipMap" title="Karte laden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg><span data-i18n="btnMap">KARTE</span></button>
+    <button class="toolbtn gm-only" id="btnImport" data-i18n-title="tipImport" title="JSON-Daten laden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M12 3v13"/><path d="m7 8 5-5 5 5"/></svg><span data-i18n="btnImport">IMPORT</span></button>
     <div class="sep gm-only"></div>
-    <button class="toolbtn gm-only" id="btnTheme" title="Design wechseln">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg><span id="themeLabel">Sixth World</span></button>
-    <button class="toolbtn accent" id="btnExport" title="Als JSON speichern">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/></svg>EXPORT</button>
-    <button class="toolbtn" id="btnImage" title="Karte mit Markern als Bild (JPG) speichern">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4 18 5-4 4 3 3-2 4 3"/></svg>BILD</button>
-    <button class="toolbtn gm-only danger" id="btnClear" title="Alle Objekte löschen">
+    <button class="toolbtn gm-only" id="btnTheme" data-i18n-title="tipTheme" title="Design wechseln">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor" stroke="none"/></svg><span id="themeLabel">Cyber</span></button>
+    <button class="toolbtn accent" id="btnExport" data-i18n-title="tipExport" title="Als JSON speichern">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/></svg><span data-i18n="btnExport">EXPORT</span></button>
+    <button class="toolbtn" id="btnImage" data-i18n-title="tipImage" title="Karte mit Markern als Bild (JPG) speichern">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4 18 5-4 4 3 3-2 4 3"/></svg><span data-i18n="btnImage">BILD</span></button>
+    <button class="toolbtn gm-only danger" id="btnClear" data-i18n-title="tipClear" title="Alle Objekte löschen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3m1 0-1 13H8L7 7"/></svg></button>
   </header>
 
   <div class="main">
     <aside>
       <div class="side-sec">
-        <h3>Legende</h3>
+        <h3 data-i18n="secLegend">Legende</h3>
         <div id="legend"></div>
-        <button class="addcat gm-only" id="btnAddCat">+ Kategorie</button>
+        <button class="addcat gm-only" id="btnAddCat" data-i18n="addCat">+ Kategorie</button>
       </div>
       <div class="side-sec" style="flex:1;display:flex;flex-direction:column;min-height:0;padding-bottom:0">
-        <h3>Objekte <span id="pinTotal" style="margin-left:auto;font-family:var(--mono);color:var(--cyan)"></span></h3>
-        <input class="pinsearch" id="pinSearch" placeholder="suchen…">
+        <h3><span data-i18n="secObjects">Objekte</span> <span id="pinTotal" style="margin-left:auto;font-family:var(--mono);color:var(--cyan)"></span></h3>
+        <input class="pinsearch" id="pinSearch" data-i18n-ph="searchPh" placeholder="suchen…">
         <div class="pinlist" id="pinList"></div>
       </div>
     </aside>
 
     <div class="stage">
       <div id="viewport">
-        <div id="world"><img id="mapImg" alt="" style="display:none"></div>
+        <div id="world"><img id="mapImg" alt="" draggable="false" style="display:none"></div>
         <svg id="zoneSvg"></svg>
         <div id="pinLayer"></div>
       </div>
 
       <div class="empty" id="empty">
         <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/><circle cx="12" cy="11" r="2.2" fill="currentColor" stroke="none"/></svg>
-        <h2>HAMBURG SPRAWL // KEINE KARTE GELADEN</h2>
-        <p>Lade die Shadowrun-Karte hoch. Danach Marker setzen, Gebiete einfärben und Grenzen ziehen — alles für deine Crew exportierbar.</p>
+        <h2 data-i18n="emptyH">KEINE KARTE GELADEN</h2>
+        <p data-i18n="emptyP">Lade deine Karte hoch. Danach Marker setzen, Gebiete einfärben und Grenzen ziehen — alles für deine Gruppe exportierbar.</p>
         <div class="dropzone" id="dropzone">
           <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--txt-dim)"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-          <span style="font-family:var(--mono);font-size:12px;color:var(--txt-dim)">JPG / PNG hierher ziehen oder klicken</span>
+          <span data-i18n="dropHint" style="font-family:var(--mono);font-size:12px;color:var(--txt-dim)">JPG / PNG hierher ziehen oder klicken</span>
         </div>
       </div>
 
@@ -299,48 +356,54 @@
       <div class="zoomctl"><button id="zIn">+</button><div class="zlevel" id="zLevel">100%</div><button id="zOut">−</button><button id="zFit" style="font-size:13px">⊡</button></div>
       <div class="popup" id="popup"></div>
       <div class="measbox" id="measBox">
-        <div class="measrow"><span class="meastitle">DISTANZ</span><b id="measVal">–</b></div>
+        <div class="measrow"><span class="meastitle" data-i18n="measTitle">DISTANZ</span><b id="measVal">–</b></div>
         <div class="meassub" id="measScale">Maßstab: nicht geeicht</div>
         <div class="measbtns">
-          <button class="toolbtn gm-only" id="measCal" title="Am Maßstabsbalken eichen">Maßstab eichen</button>
-          <button class="toolbtn" id="measClear" title="Messung löschen">Zurücksetzen</button>
+          <button class="toolbtn gm-only" id="measCal" data-i18n="measCal" data-i18n-title="tipMeasCal" title="Am Maßstabsbalken eichen">Maßstab eichen</button>
+          <button class="toolbtn" id="measClear" data-i18n="measClear" data-i18n-title="tipMeasClear" title="Messung löschen">Zurücksetzen</button>
         </div>
       </div>
     </div>
   </div>
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
 </div>
 
 <!-- pin/zone editor modal -->
 <div class="overlay" id="pinModal"><div class="modal">
   <div class="modal-head"><h3 id="pmTitle">Marker</h3><button class="x" data-close>×</button></div>
   <div class="modal-body">
-    <div class="field"><label id="pmNameLbl">Name / Ort</label><input id="pmName" placeholder="z.B. Der Schwarze Reiter"></div>
-    <div class="field"><label>Kategorie</label><div class="catgrid" id="pmCats"></div></div>
-    <div class="field"><label>Notiz / Info</label><textarea id="pmDesc" placeholder="Beschreibung, Kontakte, Gerüchte…"></textarea></div>
+    <div class="field"><label id="pmNameLbl">Name / Ort</label><input id="pmName" data-i18n-ph="phPinName" placeholder="z.B. Tempel der Schatten"></div>
+    <div class="field"><label data-i18n="mCategory">Kategorie</label><div class="catgrid" id="pmCats"></div></div>
+    <div class="field"><label data-i18n="mNote">Notiz / Info</label><textarea id="pmDesc" data-i18n-ph="phDesc" placeholder="Beschreibung, Kontakte, Gerüchte…"></textarea></div>
   </div>
-  <div class="modal-foot"><button class="toolbtn danger" id="pmDelete" style="display:none">Löschen</button><button class="toolbtn primary" id="pmSave">Speichern</button></div>
+  <div class="modal-foot"><button class="toolbtn danger" id="pmDelete" data-i18n="mDelete" style="display:none">Löschen</button><button class="toolbtn primary" id="pmSave" data-i18n="mSave">Speichern</button></div>
 </div></div>
 
 <!-- category modal -->
 <div class="overlay" id="catModal"><div class="modal">
-  <div class="modal-head"><h3>Kategorie</h3><button class="x" data-close>×</button></div>
+  <div class="modal-head"><h3 data-i18n="cTitle">Kategorie</h3><button class="x" data-close>×</button></div>
   <div class="modal-body">
-    <div class="field"><label>Bezeichnung</label><input id="catName" placeholder="z.B. Schmuggler"></div>
-    <div class="field"><label>Farbe</label><div class="colorrow"><input type="color" id="catColor" value="#00e5ff"><input id="catColorHex" style="flex:1" value="#00e5ff"></div></div>
+    <div class="field"><label data-i18n="cLabel">Bezeichnung</label><input id="catName" data-i18n-ph="phCatName" placeholder="z.B. Tavernen"></div>
+    <div class="field"><label data-i18n="cColor">Farbe</label><div class="colorrow"><input type="color" id="catColor" value="#00e5ff"><input id="catColorHex" style="flex:1" value="#00e5ff"></div></div>
+    <div class="field"><label data-i18n="cIcon">Symbol auf der Karte</label><div class="iconpick" id="catIcons"></div></div>
+    <div class="field"><label data-i18n="cDisplay">Darstellung</label><div class="optrow">
+      <button type="button" class="opttoggle" id="catSolo" data-i18n="cSolo">Nur Symbol (ohne Pin-Nadel)</button>
+      <button type="button" class="opttoggle" id="catDim" data-i18n="cDim">50&nbsp;% transparent</button>
+    </div></div>
   </div>
-  <div class="modal-foot"><button class="toolbtn danger" id="catDelete" style="display:none">Löschen</button><button class="toolbtn primary" id="catSave">Speichern</button></div>
+  <div class="modal-foot"><button class="toolbtn danger" id="catDelete" data-i18n="mDelete" style="display:none">Löschen</button><button class="toolbtn primary" id="catSave" data-i18n="mSave">Speichern</button></div>
 </div></div>
 
 <!-- scale calibration modal -->
 <div class="overlay" id="scaleModal"><div class="modal">
-  <div class="modal-head"><h3>Maßstab eichen</h3><button class="x" data-close-scale>×</button></div>
+  <div class="modal-head"><h3 data-i18n="sTitle">Maßstab eichen</h3><button class="x" data-close-scale>×</button></div>
   <div class="modal-body">
-    <div class="field"><label>Wie lang ist die markierte Strecke in der Realität?</label>
-      <div class="colorrow"><input id="scaleDist" type="number" step="any" min="0" placeholder="z.B. 5" style="flex:2">
+    <div class="field"><label data-i18n="sQ">Wie lang ist die markierte Strecke in der Realität?</label>
+      <div class="colorrow"><input id="scaleDist" type="number" step="any" min="0" data-i18n-ph="phDist" placeholder="z.B. 5" style="flex:2">
       <input id="scaleUnit" placeholder="km" value="km" style="flex:1"></div></div>
     <div class="meassub" id="scaleHint" style="position:static;padding:0;border:0;background:none"></div>
   </div>
-  <div class="modal-foot"><button class="toolbtn danger" id="scaleReset" style="display:none">Eichung löschen</button><button class="toolbtn primary" id="scaleSave">Übernehmen</button></div>
+  <div class="modal-foot"><button class="toolbtn danger" id="scaleReset" data-i18n="sReset" style="display:none">Eichung löschen</button><button class="toolbtn primary" id="scaleSave" data-i18n="sApply">Übernehmen</button></div>
 </div></div>
 
 <input type="file" id="fileMap" accept="image/*" hidden>
@@ -350,15 +413,148 @@
 <script>
 "use strict";
 const DEFAULT_CATS=[
-  {id:"corp",label:"Konzern / A-Zone",color:"#00e5ff"},
-  {id:"under",label:"Unterwelt",color:"#ff2d6f"},
-  {id:"safe",label:"Safehouse",color:"#1ff58a"},
-  {id:"contact",label:"Kontakt / Fixer",color:"#ffb627"},
-  {id:"danger",label:"Gefahrenzone",color:"#ff4438"},
-  {id:"misc",label:"Sonstiges",color:"#a06bff"},
+  {id:"corp",i18n:"catPlace",color:"#00e5ff"},
+  {id:"under",i18n:"catUnder",color:"#ff2d6f"},
+  {id:"safe",i18n:"catSafe",color:"#1ff58a"},
+  {id:"contact",i18n:"catContact",color:"#ffb627"},
+  {id:"danger",i18n:"catDanger",color:"#ff4438"},
+  {id:"misc",i18n:"catMisc",color:"#a06bff"},
 ];
+/* ===== i18n (DE / EN) ===== */
+const I18N={
+ de:{
+  modePlayerSwitch:"SPIELER", modeGmTag:"GM", modePlayerTag:"Spieler",
+  btnMarker:"MARKER", btnArea:"GEBIET", btnLine:"GRENZE", btnMeasure:"MESSEN",
+  btnMap:"KARTE", btnImport:"IMPORT", btnExport:"EXPORT", btnImage:"BILD",
+  secLegend:"Legende", addCat:"+ Kategorie", secObjects:"Objekte", searchPh:"suchen…",
+  emptyH:"KEINE KARTE GELADEN",
+  emptyP:"Lade deine Karte hoch. Danach Marker setzen, Gebiete einfärben und Grenzen ziehen — alles für deine Gruppe exportierbar.",
+  dropHint:"JPG / PNG hierher ziehen oder klicken",
+  measTitle:"DISTANZ", measCal:"Maßstab eichen", measClear:"Zurücksetzen",
+  mCategory:"Kategorie", mNote:"Notiz / Info", mDelete:"Löschen", mSave:"Speichern",
+  cTitle:"Kategorie", cLabel:"Bezeichnung", cColor:"Farbe", cIcon:"Symbol auf der Karte",
+  cDisplay:"Darstellung", cSolo:"Nur Symbol (ohne Pin-Nadel)", cDim:"50\u00a0% transparent",
+  sTitle:"Maßstab eichen", sQ:"Wie lang ist die markierte Strecke in der Realität?", sReset:"Eichung löschen", sApply:"Übernehmen",
+  tipTitleEdit:"Titel bearbeiten (GM)", tipMode:"Modus", tipMarker:"Marker setzen (A)", tipArea:"Gebiet einzeichnen (G)",
+  tipLine:"Grenze / Linie ziehen (L)", tipMeasure:"Distanz messen (M)", tipMap:"Karte laden", tipImport:"JSON-Daten laden",
+  tipTheme:"Design wechseln", tipExport:"Als JSON speichern", tipImage:"Karte mit Markern als Bild (JPG) speichern",
+  tipClear:"Alle Objekte löschen", tipMeasCal:"Am Maßstabsbalken eichen", tipMeasClear:"Messung löschen", tipLang:"Sprache / Language",
+  phPinName:"z.B. Tempel der Schatten", phDesc:"Beschreibung, Kontakte, Gerüchte…", phCatName:"z.B. Tavernen", phDist:"z.B. 5",
+  catPlace:"Ort / Gebäude", catUnder:"Unterwelt", catSafe:"Unterschlupf", catContact:"Kontakt", catDanger:"Gefahr", catMisc:"Sonstiges",
+  mPin:"Marker", mPinEdit:"Marker bearbeiten", mPinNew:"Marker setzen", mNameOrt:"Name / Ort", mBezeichnung:"Bezeichnung",
+  zNew:"Neues ", zArea:"Gebiet", zLine:"Grenze", iconStandard:"Standard (Punkt)",
+  popNoInfo:"— keine weiteren Informationen —", unnamed:"Unbenannt",
+  banPin:"▸ AUF DIE KARTE KLICKEN UM MARKER ZU SETZEN",
+  banArea:"▸ ECKPUNKTE KLICKEN • DOPPELKLICK / ENTER = SCHLIESSEN",
+  banLine:"▸ PUNKTE KLICKEN • DOPPELKLICK / ENTER = FERTIG",
+  banMeasure:"▸ PUNKTE KLICKEN ZUM MESSEN • DOPPELKLICK = ENDE • ESC = ZURÜCKSETZEN",
+  banCal:"▸ MASSSTAB EICHEN: ANFANG UND ENDE DES MASSSTABSBALKENS KLICKEN",
+  measNot:"Maßstab: nicht geeicht",
+  measOn:(ref,unit)=>`Maßstab: ${ref} ${unit} geeicht`,
+  listNoHits:"keine treffer",
+  listNoObj:"// noch keine objekte\nMARKER / GEBIET / GRENZE wählen\nund auf die karte klicken",
+  listNoMap:"// erst karte laden",
+  tKarteGeladen:"Karte geladen", tInvalidImg:"Keine gültige Bilddatei", tDatenGeladen:"Daten geladen", tInvalidJson:"Ungültige JSON-Datei",
+  tErstKarte:"Erst Karte laden", tBildErstelle:"Erstelle Bild…", tBildFail:"Bild-Export fehlgeschlagen",
+  tBildOk:n=>`Bild gespeichert → ${n}`, tExportOk:n=>`Exportiert → ${n}`,
+  tNichts:"Nichts zu löschen", tConfirmClear:n=>`Wirklich ALLE ${n} Objekte (Marker, Gebiete, Grenzen) löschen?`, tAlleWeg:"Alle Objekte gelöscht",
+  tMarkUpd:"Marker aktualisiert", tMarkSet:"Marker gesetzt", tAreaNew:"Gebiet angelegt", tAreaUpd:"Gebiet aktualisiert",
+  tMarkDel:"Marker gelöscht", tAreaDel:"Gebiet gelöscht", tLineDel:"Grenze gelöscht", tMarkMove:"Marker verschoben",
+  tMin3:"Mind. 3 Punkte nötig", tMin2:"Mind. 2 Punkte nötig", tTitleSaved:"Titel gespeichert",
+  tScaleOk:(ref,unit)=>`Maßstab geeicht: ${ref} ${unit}`, tScaleOff:"Eichung entfernt", tValidLen:"Bitte gültige Länge eingeben",
+  tLoadFail:tg=>`Karte konnte nicht geladen werden: ${tg}`, tCatMove:"Objekte dieser Kategorie werden auf 'Sonstiges' verschoben. Fortfahren?",
+  tTheme:l=>`Design: ${l}`, calHint:px=>`Markierte Strecke: ${px} Bildpunkte`,
+  themeCyber:"Cyber", themeFantasy:"Fantasy", defSub:"KARTEN-WERKZEUG",
+ },
+ en:{
+  modePlayerSwitch:"PLAYER", modeGmTag:"GM", modePlayerTag:"Player",
+  btnMarker:"MARKER", btnArea:"AREA", btnLine:"BORDER", btnMeasure:"MEASURE",
+  btnMap:"MAP", btnImport:"IMPORT", btnExport:"EXPORT", btnImage:"IMAGE",
+  secLegend:"Legend", addCat:"+ Category", secObjects:"Objects", searchPh:"search…",
+  emptyH:"NO MAP LOADED",
+  emptyP:"Upload your map. Then place markers, fill areas and draw borders — all exportable for your group.",
+  dropHint:"Drag JPG / PNG here or click",
+  measTitle:"DISTANCE", measCal:"Calibrate scale", measClear:"Reset",
+  mCategory:"Category", mNote:"Note / Info", mDelete:"Delete", mSave:"Save",
+  cTitle:"Category", cLabel:"Label", cColor:"Color", cIcon:"Map symbol",
+  cDisplay:"Display", cSolo:"Symbol only (no pin needle)", cDim:"50% transparent",
+  sTitle:"Calibrate scale", sQ:"How long is the marked distance in reality?", sReset:"Delete calibration", sApply:"Apply",
+  tipTitleEdit:"Edit title (GM)", tipMode:"Mode", tipMarker:"Place marker (A)", tipArea:"Draw area (G)",
+  tipLine:"Draw border / line (L)", tipMeasure:"Measure distance (M)", tipMap:"Load map", tipImport:"Load JSON data",
+  tipTheme:"Switch theme", tipExport:"Save as JSON", tipImage:"Save map with markers as image (JPG)",
+  tipClear:"Delete all objects", tipMeasCal:"Calibrate against the scale bar", tipMeasClear:"Clear measurement", tipLang:"Sprache / Language",
+  phPinName:"e.g. Temple of Shadows", phDesc:"Description, contacts, rumors…", phCatName:"e.g. Taverns", phDist:"e.g. 5",
+  catPlace:"Place / Building", catUnder:"Underworld", catSafe:"Safehouse", catContact:"Contact", catDanger:"Danger", catMisc:"Misc",
+  mPin:"Marker", mPinEdit:"Edit marker", mPinNew:"Place marker", mNameOrt:"Name / Location", mBezeichnung:"Label",
+  zNew:"New ", zArea:"Area", zLine:"Border", iconStandard:"Default (dot)",
+  popNoInfo:"— no further information —", unnamed:"Unnamed",
+  banPin:"▸ CLICK ON THE MAP TO PLACE A MARKER",
+  banArea:"▸ CLICK CORNERS • DOUBLE-CLICK / ENTER = CLOSE",
+  banLine:"▸ CLICK POINTS • DOUBLE-CLICK / ENTER = DONE",
+  banMeasure:"▸ CLICK POINTS TO MEASURE • DOUBLE-CLICK = END • ESC = RESET",
+  banCal:"▸ CALIBRATE SCALE: CLICK START AND END OF THE SCALE BAR",
+  measNot:"Scale: not calibrated",
+  measOn:(ref,unit)=>`Scale: ${ref} ${unit} calibrated`,
+  listNoHits:"no matches",
+  listNoObj:"// no objects yet\nchoose MARKER / AREA / BORDER\nand click on the map",
+  listNoMap:"// load a map first",
+  tKarteGeladen:"Map loaded", tInvalidImg:"Not a valid image file", tDatenGeladen:"Data loaded", tInvalidJson:"Invalid JSON file",
+  tErstKarte:"Load a map first", tBildErstelle:"Creating image…", tBildFail:"Image export failed",
+  tBildOk:n=>`Image saved → ${n}`, tExportOk:n=>`Exported → ${n}`,
+  tNichts:"Nothing to delete", tConfirmClear:n=>`Really delete ALL ${n} objects (markers, areas, borders)?`, tAlleWeg:"All objects deleted",
+  tMarkUpd:"Marker updated", tMarkSet:"Marker placed", tAreaNew:"Area created", tAreaUpd:"Area updated",
+  tMarkDel:"Marker deleted", tAreaDel:"Area deleted", tLineDel:"Border deleted", tMarkMove:"Marker moved",
+  tMin3:"At least 3 points needed", tMin2:"At least 2 points needed", tTitleSaved:"Title saved",
+  tScaleOk:(ref,unit)=>`Scale calibrated: ${ref} ${unit}`, tScaleOff:"Calibration removed", tValidLen:"Please enter a valid length",
+  tLoadFail:tg=>`Could not load map: ${tg}`, tCatMove:"Objects of this category will be moved to 'Misc'. Continue?",
+  tTheme:l=>`Theme: ${l}`, calHint:px=>`Marked distance: ${px} pixels`,
+  themeCyber:"Cyber", themeFantasy:"Fantasy", defSub:"MAP TOOL",
+ }
+};
+function t(k){const tab=I18N[state.lang]||I18N.de;let v=(k in tab)?tab[k]:I18N.de[k];
+  if(typeof v==="function")return v.apply(null,[].slice.call(arguments,1));
+  return v!=null?v:k;}
+function catLabel(c){return (c&&c.label!=null)?c.label:(c&&c.i18n?t(c.i18n):"");}
+function iconLabel(id){const ic=ICONS[id];if(!ic)return id;return (state.lang==="en"&&ic.en)?ic.en:ic.label;}
+/* ---- map symbols (24x24 viewBox). Dots = near-zero round-cap segments. ---- */
+const ICONS={
+  bar:     {label:"Bar / Kneipe",      en:"Bar / Pub",          paths:["M5 4 H19 L12 12 Z","M12 12 V20","M8 20 H16"]},
+  building:{label:"Gebäude / Turm",    en:"Building / Tower",   paths:["M6 21 V5 H18 V21","M4 21 H20","M9 9 H11","M13 9 H15","M9 13 H11","M13 13 H15","M9 17 H11","M13 17 H15"]},
+  person:  {label:"Kontakt / Person",  en:"Contact / Person",   paths:["M9 7 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0","M5 20 a7 7 0 0 1 14 0"]},
+  house:   {label:"Haus / Unterschlupf",en:"House / Safehouse", paths:["M4 11 L12 4 L20 11","M6 10 V20 H18 V10","M10 20 V14 H14 V20"]},
+  warning: {label:"Gefahr",            en:"Danger",             paths:["M12 3 L22 20 H2 Z","M12 9 V14","M12 17 L12 17.05"]},
+  shop:    {label:"Laden / Markt",     en:"Shop / Market",      paths:["M6 8 H18 L17 21 H7 Z","M9 8 V6 a3 3 0 0 1 6 0 V8"]},
+  cross:   {label:"Klinik / Heiler",   en:"Clinic / Healer",    paths:["M12 3 a9 9 0 1 0 0.01 0","M12 8 V16","M8 12 H16"]},
+  target:  {label:"Ziel / Waffe",      en:"Target / Weapon",    paths:["M12 3 a9 9 0 1 0 0.01 0","M12 3 V7","M12 17 V21","M3 12 H7","M17 12 H21","M12 12 L12 12.05"]},
+  chip:    {label:"Tech / Maschine",   en:"Tech / Machine",     paths:["M7 7 H17 V17 H7 Z","M10 10 H14 V14 H10 Z","M7 10 H4","M7 14 H4","M17 10 H20","M17 14 H20","M10 7 V4","M14 7 V4","M10 17 V20","M14 17 V20"]},
+  magic:   {label:"Magie",             en:"Magic",   fill:true, paths:["M12 2 L13.8 9.5 L21 12 L13.8 14.5 L12 22 L10.2 14.5 L3 12 L10.2 9.5 Z"]},
+  food:    {label:"Restaurant",        en:"Restaurant",         paths:["M9 4 V20","M7 4 V9","M11 4 V9","M7 9 H11","M15 4 C17 6 17 11 15 12 V20"]},
+  anchor:  {label:"Hafen / Anker",     en:"Harbor / Anchor",    paths:["M10 4 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0","M12 6 V20","M8 10 H16","M4 14 a8 8 0 0 0 16 0","M4 14 L2 12.8","M4 14 L6 13","M20 14 L22 12.8","M20 14 L18 13"]},
+  train:   {label:"Transit / Reise",   en:"Transit / Travel",   paths:["M7 4 H17 V16 a3 3 0 0 1 -3 3 H10 a3 3 0 0 1 -3 -3 Z","M7 9 H17","M9.5 13 L9.5 13.05","M14.5 13 L14.5 13.05","M8 19 L6 22","M16 19 L18 22"]},
+  bridge:  {label:"Brücke",            en:"Bridge",             paths:["M2 14 C8 8 16 8 22 14","M4 14 V18","M20 14 V18","M2 18 H22","M12 18 V12"]},
+  flag:    {label:"Flagge / Basis",    en:"Flag / Base",        paths:["M6 3 V21","M6 4 H18 L15 8 L18 12 H6"]},
+  star:    {label:"Stern / Wichtig",   en:"Star / Important", fill:true, paths:["M12 3 L14.7 9.2 L21 9.8 L16 14 L17.5 21 L12 17.3 L6.5 21 L8 14 L3 9.8 L9.3 9.2 Z"]},
+};
+/* inner <g> markup for an icon, centred at (cx,cy) scaled to `size` px */
+function iconSVGInner(iconId,color,o){
+  const ic=ICONS[iconId];if(!ic)return"";
+  const s=(o.size||16)/24, tx=(o.cx||12)-12*s, ty=(o.cy||12)-12*s, sw=o.sw||2.2;
+  let g=`<g transform="translate(${tx.toFixed(2)},${ty.toFixed(2)}) scale(${s.toFixed(3)})" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">`;
+  ic.paths.forEach(d=>g+=`<path d="${d}"${ic.fill?` fill="${color}" stroke="none"`:""}/>`);
+  return g+`</g>`;
+}
+/* draw an icon onto a canvas context, centred at (cx,cy), spanning ~size px */
+function drawIconCanvas(ctx,iconId,color,cx,cy,size){
+  const ic=ICONS[iconId];if(!ic)return;const s=size/24;
+  ctx.save();ctx.translate(cx-12*s,cy-12*s);ctx.scale(s,s);
+  ctx.lineWidth=2.2;ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle=color;ctx.fillStyle=color;
+  ic.paths.forEach(d=>{const p=new Path2D(d);ic.fill?ctx.fill(p):ctx.stroke(p);});
+  ctx.restore();
+}
 const SVGNS="http://www.w3.org/2000/svg";
-const state={img:null,imgW:0,imgH:0,pins:[],zones:[],cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),hidden:new Set(),mode:"gm",title:"SR//HAMBURG",subtitle:"SIXTH WORLD GRID v3",theme:"cyber",scale:null};
+/* shared marker outline (point at 15,39) used by pins + JPG export */
+const TEARDROP="M15 1C7.8 1 2 6.6 2 13.4 2 23 15 39 15 39s13-16 13-25.6C28 6.6 22.2 1 15 1Z";
+const state={img:null,imgW:0,imgH:0,pins:[],zones:[],cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),hidden:new Set(),mode:"gm",title:"PEN & PAPER",subtitle:"KARTEN-WERKZEUG",theme:"cyber",scale:null,lang:"de"};
 const view={scale:1,tx:0,ty:0};
 let tool=null;                 // null | 'pin' | 'area' | 'line' | 'measure'
 let editingPin=null, editingZone=null, editingCat=null, pendingXY=null, pmType="pin";
@@ -397,8 +593,8 @@ function updateMeasBox(){
   const total=measure&&measure.pts.length>1?pathPx(measure.pts):0;
   $("#measVal").textContent = (measure&&measure.pts.length>1)?fmtDist(total):"–";
   $("#measScale").textContent = state.scale
-    ? `Maßstab: ${String(state.scale.ref).replace(".",",")} ${state.scale.unit} geeicht`
-    : "Maßstab: nicht geeicht";
+    ? t("measOn", String(state.scale.ref).replace(".",","), state.scale.unit)
+    : t("measNot");
 }
 
 /* ---- transform & positioning ---- */
@@ -426,28 +622,55 @@ function zoomAt(cx,cy,f){
 }
 viewport.addEventListener("wheel",e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,e.deltaY<0?1.12:0.893);},{passive:false});
 
-/* ---- pan + click ---- */
-let panning=false,sx,sy,stx,sty,moved=0;
+/* ---- pan + pinch + click (mouse & touch) ---- */
+const ptrs=new Map(); let panning=false,sx,sy,stx,sty,moved=0,pinch=null;
 viewport.addEventListener("pointerdown",e=>{
-  if(e.button!==0)return;
-  panning=true;moved=0;sx=e.clientX;sy=e.clientY;stx=view.tx;sty=view.ty;
-  viewport.setPointerCapture(e.pointerId);viewport.classList.add("panning");
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{viewport.setPointerCapture(e.pointerId);}catch(_){}
+  if(ptrs.size===1){panning=true;moved=0;sx=e.clientX;sy=e.clientY;stx=view.tx;sty=view.ty;viewport.classList.add("panning");pinch=null;}
+  else if(ptrs.size===2){panning=false;viewport.classList.remove("panning");
+    const p=[...ptrs.values()];
+    pinch={d0:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)||1,s0:view.scale,mx:(p[0].x+p[1].x)/2,my:(p[0].y+p[1].y)/2,tx0:view.tx,ty0:view.ty};}
 });
 viewport.addEventListener("pointermove",e=>{
-  if(state.imgW){const p=screenToImgPct(e.clientX,e.clientY);
+  if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(state.imgW&&!pinch){const p=screenToImgPct(e.clientX,e.clientY);
     $("#hudCoord").textContent=`GRID ${clamp(p.x,0,100).toFixed(1)} : ${clamp(p.y,0,100).toFixed(1)}`;
     if(draft){draft.cursor=p;drawZones();}
     else if(measure&&!measure.done&&measure.pts.length){measure.cursor=p;updateMeasBox();drawZones();}
     else if(calib&&calib.a&&!calib.b){calib.cursor=p;drawZones();}}
+  if(pinch&&ptrs.size>=2){applyPinch();return;}
   if(!panning)return;
   const dx=e.clientX-sx,dy=e.clientY-sy;moved+=Math.abs(dx)+Math.abs(dy);
   view.tx=stx+dx;view.ty=sty+dy;applyTransform();
 });
-viewport.addEventListener("pointerup",e=>{
-  viewport.classList.remove("panning");const was=panning;panning=false;
-  if(was&&moved<5)handleClick(e);
-});
+function applyPinch(){
+  const p=[...ptrs.values()];if(p.length<2)return;
+  const dist=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)||1;
+  const mx=(p[0].x+p[1].x)/2, my=(p[0].y+p[1].y)/2;
+  const r=viewport.getBoundingClientRect();
+  const ns=clamp(pinch.s0*(dist/pinch.d0),0.15,12);
+  const ox=pinch.mx-r.left, oy=pinch.my-r.top, cx=mx-r.left, cy=my-r.top;
+  view.scale=ns;
+  view.tx=cx-((ox-pinch.tx0)/pinch.s0)*ns;
+  view.ty=cy-((oy-pinch.ty0)/pinch.s0)*ns;
+  applyTransform();
+}
+function endPtr(e){
+  if(!ptrs.has(e.pointerId))return;
+  ptrs.delete(e.pointerId);
+  try{viewport.releasePointerCapture(e.pointerId);}catch(_){}
+  if(ptrs.size<2)pinch=null;
+  if(ptrs.size===0){viewport.classList.remove("panning");const was=panning;panning=false;if(was&&moved<6)handleClick(e);}
+  else if(ptrs.size===1){const o=[...ptrs.values()][0];panning=true;moved=999;sx=o.x;sy=o.y;stx=view.tx;sty=view.ty;}
+}
+viewport.addEventListener("pointerup",endPtr);
+viewport.addEventListener("pointercancel",endPtr);
 viewport.addEventListener("dblclick",e=>{if(draft)finishDraft();else if(measure&&!measure.done){measure.done=true;updateMeasBox();drawZones();}});
+// Firefox: verhindert, dass beim Ziehen das Kartenbild als Datei "weggezogen" wird
+viewport.addEventListener("dragstart",e=>e.preventDefault());
+mapImg.addEventListener("dragstart",e=>e.preventDefault());
 
 function handleClick(e){
   hidePopup();
@@ -457,7 +680,7 @@ function handleClick(e){
   if(zEl&&zEl.dataset.zid){const z=state.zones.find(z=>z.id===zEl.dataset.zid);if(z){onZoneClick(z);return;}}
   const p=screenToImgPct(e.clientX,e.clientY);
   if(p.x<0||p.x>100||p.y<0||p.y>100)return;
-  // measuring works in GM and Runner mode
+  // measuring works in GM and player mode
   if(tool==="measure"){
     if(calib){
       if(!calib.a){calib.a=p;}
@@ -571,21 +794,35 @@ function onZoneClick(z){hidePopup();if(state.mode==="gm")openZoneModal(z);else s
 function loadImage(d){const img=new Image();img.onload=()=>{state.img=d;state.imgW=img.naturalWidth;state.imgH=img.naturalHeight;
   mapImg.src=d;mapImg.style.display="block";mapImg.width=state.imgW;mapImg.height=state.imgH;
   empty.classList.add("hide");fitView();renderPins();};img.src=d;}
-function readImg(file,cb){if(!file||!file.type.startsWith("image/")){toast("Keine gültige Bilddatei");return;}const r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(file);}
-$("#fileMap").addEventListener("change",e=>{const f=e.target.files[0];if(f)readImg(f,d=>{loadImage(d);toast("Karte geladen");});e.target.value="";});
+function readImg(file,cb){if(!file||!file.type.startsWith("image/")){toast(t("tInvalidImg"));return;}const r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(file);}
+$("#fileMap").addEventListener("change",e=>{const f=e.target.files[0];if(f)readImg(f,d=>{loadImage(d);toast(t("tKarteGeladen"));});e.target.value="";});
 $("#btnMap").onclick=()=>$("#fileMap").click();
 const dz=$("#dropzone");dz.onclick=()=>$("#fileMap").click();
 ["dragenter","dragover"].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("hover");}));
 ["dragleave","drop"].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();if(ev!=="drop")dz.classList.remove("hover");}));
-stage.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("hover");const f=e.dataTransfer.files[0];if(f)readImg(f,d=>{loadImage(d);toast("Karte geladen");});});
+stage.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("hover");const f=e.dataTransfer.files[0];if(f)readImg(f,d=>{loadImage(d);toast(t("tKarteGeladen"));});});
 
 /* ---- pins ---- */
-function pinSVG(color){return `<svg width="30" height="40" viewBox="0 0 30 40"><path class="head" d="M15 1C7.8 1 2 6.6 2 13.4 2 23 15 39 15 39s13-16 13-25.6C28 6.6 22.2 1 15 1Z" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-width="2"/><circle class="head" cx="15" cy="13.4" r="5" fill="${color}" stroke="#070a0f" stroke-width="1.5"/></svg>`;}
+function pinSVG(cat){
+  const color=cat.color, iconId=cat.icon, ic=iconId&&ICONS[iconId];
+  const op=cat.dim?` opacity="0.5"`:"";
+  const wrap=s=>`<svg width="30" height="40" viewBox="0 0 30 40"${op}>${s}</svg>`;
+  const teardrop=`<path class="head" d="${TEARDROP}" fill="${color}" fill-opacity="0.16" stroke="${color}" stroke-width="2"/>`;
+  if(cat.solo){
+    // no pin needle — just the symbol in a solid shape that tapers to a point
+    const inner=ic?iconSVGInner(iconId,textColorFor(color),{cx:15,cy:14,size:17,sw:2.2}):"";
+    return wrap(`<g class="head"><path d="${TEARDROP}" fill="${color}" stroke="#070a0f" stroke-width="1.5"/>${inner}</g>`);
+  }
+  if(!ic)
+    return wrap(`${teardrop}<circle class="head" cx="15" cy="13.4" r="5" fill="${color}" stroke="#070a0f" stroke-width="1.5"/>`);
+  const inner=iconSVGInner(iconId,textColorFor(color),{cx:15,cy:13.4,size:10,sw:2.4});
+  return wrap(`${teardrop}<g class="head"><circle cx="15" cy="13.4" r="6.5" fill="${color}" stroke="#070a0f" stroke-width="1.5"/>${inner}</g>`);
+}
 function renderPins(){
   pinLayer.innerHTML="";
   state.pins.forEach(p=>{if(state.hidden.has(p.cat))return;const c=catById(p.cat);
     const el=document.createElement("div");el.className="pin";el.dataset.id=p.id;el.dataset.x=p.x;el.dataset.y=p.y;el.style.color=c.color;
-    el.innerHTML=`<span class="ping"></span><span class="pin-label">${esc(p.name||"Unbenannt")}</span>${pinSVG(c.color)}`;
+    el.innerHTML=`<span class="ping"></span><span class="pin-label">${esc(p.name||t("unnamed"))}</span>${pinSVG(c)}`;
     el.addEventListener("pointerdown",ev=>{
       if(ev.button!==0)return;
       ev.stopPropagation();ev.preventDefault();
@@ -598,7 +835,7 @@ function renderPins(){
         window.removeEventListener("blur",onCancel);
         el.classList.remove("dragging");
       }
-      function endDrag(){if(done)return;done=true;cleanup();if(dragging&&canDrag){toast("Marker verschoben");renderList();}}
+      function endDrag(){if(done)return;done=true;cleanup();if(dragging&&canDrag){toast(t("tMarkMove"));renderList();}}
       const onMove=mv=>{
         if(mv.buttons===0){onUp();return;}      // button already released — never get stuck
         const dx=mv.clientX-startX,dy=mv.clientY-startY;
@@ -612,7 +849,7 @@ function renderPins(){
       };
       const onUp=()=>{
         if(done)return;done=true;cleanup();
-        if(dragging&&canDrag){toast("Marker verschoben");renderList();}
+        if(dragging&&canDrag){toast(t("tMarkMove"));renderList();}
         else{state.mode==="gm"?openPinModal(p):showPopupAt(p,{x:p.x,y:p.y},true);}
       };
       const onCancel=()=>endDrag();
@@ -628,10 +865,11 @@ function renderPins(){
 /* ---- popup (player) ---- */
 function showPopupAt(obj,ptPct,isPin){
   const c=catById(obj.cat),pop=$("#popup");
-  pop.innerHTML=`<div class="popup-top"><span class="d" style="color:${c.color};background:${c.color}"></span>
+  const dotIc=c.icon&&ICONS[c.icon]?`<svg class="di" viewBox="0 0 24 24">${iconSVGInner(c.icon,textColorFor(c.color),{cx:12,cy:12,size:13,sw:2.6})}</svg>`:"";
+  pop.innerHTML=`<div class="popup-top"><span class="d${c.icon&&ICONS[c.icon]?" has-ic":""}" style="color:${c.color};background:${c.color}">${dotIc}</span>
     <span class="nm">${esc(obj.name||"Unbenannt")}</span><button class="x" id="popClose">×</button></div>
-    <div class="popup-cat" style="color:${c.color}">${esc(c.label)}</div>
-    <div class="popup-desc">${esc(obj.desc||"— keine weiteren Informationen —")}</div>`;
+    <div class="popup-cat" style="color:${c.color}">${esc(catLabel(c))}</div>
+    <div class="popup-desc">${esc(obj.desc||t("popNoInfo"))}</div>`;
   pop.classList.add("on");
   const s=imgToScreen(ptPct.x,ptPct.y),sr=stage.getBoundingClientRect();
   let left=clamp(s.x-130,8,sr.width-268), top=s.y-pop.offsetHeight-(isPin?44:8);
@@ -644,28 +882,28 @@ function hidePopup(){$("#popup").classList.remove("on");}
 function buildCatChips(curCat){const grid=$("#pmCats");grid.innerHTML="";
   state.cats.forEach(c=>{const chip=document.createElement("div");chip.className="catchip"+(c.id===curCat?" sel":"");
     chip.style.color=c.color;chip.dataset.cat=c.id;
-    chip.innerHTML=`<span class="d" style="background:${c.color}"></span><span style="color:var(--txt)">${esc(c.label)}</span>`;
+    chip.innerHTML=`<span class="d" style="background:${c.color}"></span><span style="color:var(--txt)">${esc(catLabel(c))}</span>`;
     chip.onclick=()=>{grid.querySelectorAll(".catchip").forEach(x=>x.classList.remove("sel"));chip.classList.add("sel");};
     grid.appendChild(chip);});}
 function openPinModal(p){pmType="pin";editingPin=p;editingZone=null;
-  $("#pmTitle").textContent=p?"Marker bearbeiten":"Marker setzen";$("#pmNameLbl").textContent="Name / Ort";
+  $("#pmTitle").textContent=p?t("mPinEdit"):t("mPinNew");$("#pmNameLbl").textContent=t("mNameOrt");
   $("#pmName").value=p?p.name:"";$("#pmDesc").value=p?p.desc:"";
   buildCatChips(p?p.cat:state.cats[0].id);$("#pmDelete").style.display=p?"block":"none";
   $("#pinModal").classList.add("on");setTimeout(()=>$("#pmName").focus(),60);}
 function openZoneModal(z){pmType="zone";editingZone=z;editingPin=null;
-  $("#pmTitle").textContent=(z._new?"Neues ":"")+(z.closed?"Gebiet":"Grenze");$("#pmNameLbl").textContent="Bezeichnung";
+  $("#pmTitle").textContent=(z._new?t("zNew"):"")+(z.closed?t("zArea"):t("zLine"));$("#pmNameLbl").textContent=t("mBezeichnung");
   $("#pmName").value=z.name||"";$("#pmDesc").value=z.desc||"";
   buildCatChips(z.cat);$("#pmDelete").style.display=z._new?"none":"block";
   $("#pinModal").classList.add("on");setTimeout(()=>$("#pmName").focus(),60);}
 function closePinModal(){$("#pinModal").classList.remove("on");editingPin=null;editingZone=null;pendingXY=null;}
 $("#pmSave").onclick=()=>{const name=$("#pmName").value.trim();const cat=$("#pmCats .catchip.sel")?.dataset.cat||state.cats[0].id;const desc=$("#pmDesc").value;
-  if(pmType==="pin"){if(editingPin){editingPin.name=name;editingPin.cat=cat;editingPin.desc=desc;toast("Marker aktualisiert");}
-    else if(pendingXY){state.pins.push({id:uid(),x:pendingXY.x,y:pendingXY.y,cat,name,desc});toast("Marker gesetzt");}}
+  if(pmType==="pin"){if(editingPin){editingPin.name=name;editingPin.cat=cat;editingPin.desc=desc;toast(t("tMarkUpd"));}
+    else if(pendingXY){state.pins.push({id:uid(),x:pendingXY.x,y:pendingXY.y,cat,name,desc});toast(t("tMarkSet"));}}
   else{if(editingZone){editingZone.name=name;editingZone.cat=cat;editingZone.desc=desc;
-    if(editingZone._new){delete editingZone._new;state.zones.push(editingZone);toast("Gebiet angelegt");}else toast("Gebiet aktualisiert");}}
+    if(editingZone._new){delete editingZone._new;state.zones.push(editingZone);toast(t("tAreaNew"));}else toast(t("tAreaUpd"));}}
   closePinModal();renderPins();};
-$("#pmDelete").onclick=()=>{if(pmType==="pin"&&editingPin){state.pins=state.pins.filter(p=>p.id!==editingPin.id);toast("Marker gelöscht");}
-  else if(editingZone){state.zones=state.zones.filter(z=>z.id!==editingZone.id);toast("Gebiet gelöscht");}
+$("#pmDelete").onclick=()=>{if(pmType==="pin"&&editingPin){state.pins=state.pins.filter(p=>p.id!==editingPin.id);toast(t("tMarkDel"));}
+  else if(editingZone){state.zones=state.zones.filter(z=>z.id!==editingZone.id);toast(editingZone.closed?t("tAreaDel"):t("tLineDel"));}
   closePinModal();renderPins();};
 
 /* ---- legend ---- */
@@ -673,8 +911,11 @@ function renderLegend(){const wrap=$("#legend");wrap.innerHTML="";
   state.cats.forEach(c=>{const np=state.pins.filter(p=>p.cat===c.id).length, nz=state.zones.filter(z=>z.cat===c.id).length;
     const off=state.hidden.has(c.id);const row=document.createElement("div");row.className="legend-item"+(off?" off":"");
     const cnt=np+(nz?`+${nz}▰`:"");
-    row.innerHTML=`<span class="legend-dot" style="color:${c.color};background:${c.color}"></span>
-      <span class="legend-label">${esc(c.label)}</span><span class="legend-count">${cnt||0}</span>
+    const dot=c.icon&&ICONS[c.icon]
+      ? `<span class="legend-dot has-ic" style="color:${c.color};background:${c.color}${c.dim?";opacity:.5":""}"><svg class="di" viewBox="0 0 24 24">${iconSVGInner(c.icon,textColorFor(c.color),{cx:12,cy:12,size:15,sw:2.6})}</svg></span>`
+      : `<span class="legend-dot" style="color:${c.color};background:${c.color}${c.dim?";opacity:.5":""}"></span>`;
+    row.innerHTML=`${dot}
+      <span class="legend-label">${esc(catLabel(c))}</span><span class="legend-count">${cnt||0}</span>
       <svg class="legend-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${off?'<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.4 5.1A9.7 9.7 0 0 1 12 5c5 0 9 4.5 10 7-.5 1.2-1.5 2.7-3 4M6.6 6.6C4.3 8 2.6 10 2 12c1 2.5 5 7 10 7 1.2 0 2.3-.2 3.3-.6"/>':'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'}</svg>`;
     row.querySelector(".legend-eye").onclick=e=>{e.stopPropagation();state.hidden.has(c.id)?state.hidden.delete(c.id):state.hidden.add(c.id);renderPins();};
     row.onclick=()=>{if(state.mode==="gm")openCatModal(c);};wrap.appendChild(row);});}
@@ -687,19 +928,20 @@ function renderList(){const q=$("#pinSearch").value.toLowerCase().trim();const l
   if(!shown.length){list.innerHTML=`<div class="pinlist-empty">${items.length?"keine treffer":(state.img?"// noch keine objekte\nMARKER / GEBIET / GRENZE wählen\nund auf die karte klicken":"// erst karte laden")}</div>`;return;}
   shown.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
   shown.forEach(o=>{const c=catById(o.cat);const row=document.createElement("div");row.className="pinrow";
-    const icon=o._t==="pin"?`<span class="pr-dot" style="color:${c.color};background:${c.color}"></span>`
+    const icon=o._t==="pin"
+      ?(c.icon&&ICONS[c.icon]?`<svg class="pr-ic" viewBox="0 0 24 24" style="opacity:${c.dim?.5:1}">${iconSVGInner(c.icon,c.color,{cx:12,cy:12,size:20,sw:2.4})}</svg>`:`<span class="pr-dot" style="color:${c.color};background:${c.color};opacity:${c.dim?.5:1}"></span>`)
       :`<svg class="pr-shape" viewBox="0 0 12 12" style="color:${c.color}">${o.closed?`<polygon points="6,1 11,4 9,11 3,11 1,4" fill="${c.color}" fill-opacity="0.3" stroke="${c.color}" stroke-width="1"/>`:`<path d="M1 10 5 3l3 4 3-5" fill="none" stroke="${c.color}" stroke-width="1.4"/>`}</svg>`;
-    row.innerHTML=`${icon}<span class="pr-name">${esc(o.name||"Unbenannt")}</span><span class="pr-cat" style="color:${c.color}">${esc(c.label.split(" ")[0])}</span><button class="pr-del" title="Löschen">×</button>`;
+    row.innerHTML=`${icon}<span class="pr-name">${esc(o.name||t("unnamed"))}</span><span class="pr-cat" style="color:${c.color}">${esc(catLabel(c).split(" ")[0])}</span><button class="pr-del" title="${t("mDelete")}">×</button>`;
     row.onclick=()=>flyTo(o);
     row.querySelector(".pr-del").onclick=ev=>{ev.stopPropagation();deleteObject(o);};
     list.appendChild(row);});}
 function deleteObject(o){
-  if(o._t==="zone"){state.zones=state.zones.filter(z=>z.id!==o.id);toast((o.closed?"Gebiet":"Grenze")+" gelöscht");}
-  else{state.pins=state.pins.filter(p=>p.id!==o.id);toast("Marker gelöscht");}
+  if(o._t==="zone"){state.zones=state.zones.filter(z=>z.id!==o.id);toast(o.closed?t("tAreaDel"):t("tLineDel"));}
+  else{state.pins=state.pins.filter(p=>p.id!==o.id);toast(t("tMarkDel"));}
   hidePopup();renderPins();}
 $("#pinSearch").addEventListener("input",renderList);
 
-function flyTo(o){if(state.hidden.has(o.cat))state.hidden.delete(o.cat);
+function flyTo(o){if(state.hidden.has(o.cat))state.hidden.delete(o.cat);closeDrawer();
   const ct=o._t==="zone"?centroid(o.pts):{x:o.x,y:o.y};
   const vw=viewport.clientWidth,vh=viewport.clientHeight;if(view.scale<1.1)view.scale=1.4;
   const px=ct.x/100*state.imgW,py=ct.y/100*state.imgH;view.tx=vw/2-px*view.scale;view.ty=vh/2-py*view.scale;
@@ -708,17 +950,37 @@ function flyTo(o){if(state.hidden.has(o.cat))state.hidden.delete(o.cat);
     if(state.mode==="player")showPopupAt(o,ct,o._t==="pin");},40);}
 
 /* ---- category modal ---- */
-function openCatModal(c){editingCat=c||null;$("#catName").value=c?c.label:"";const col=c?c.color:"#00e5ff";
+let catIconSel=null;
+function buildIconPicker(sel){
+  catIconSel=sel||null;const wrap=$("#catIcons");wrap.innerHTML="";const col=$("#catColor").value||"#00e5ff";
+  const mk=(id,label,inner)=>{const b=document.createElement("button");b.type="button";b.title=label;
+    b.className="iconbtn"+((id||null)===catIconSel?" sel":"");b.dataset.icon=id||"";b.innerHTML=`<svg viewBox="0 0 24 24">${inner}</svg>`;
+    b.onclick=()=>{catIconSel=id||null;wrap.querySelectorAll(".iconbtn").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");};
+    wrap.appendChild(b);};
+  mk(null,t("iconStandard"),`<circle cx="12" cy="12" r="6" fill="${col}"/>`);
+  Object.keys(ICONS).forEach(id=>mk(id,iconLabel(id),iconSVGInner(id,col,{cx:12,cy:12,size:20,sw:2})));
+}
+function openCatModal(c){editingCat=c||null;$("#catName").value=c?catLabel(c):"";const col=c?c.color:"#00e5ff";
   $("#catColor").value=col;$("#catColorHex").value=col;$("#catDelete").style.display=c?"block":"none";
+  buildIconPicker(c?c.icon:null);
+  $("#catSolo").classList.toggle("on",!!(c&&c.solo));
+  $("#catDim").classList.toggle("on",!!(c&&c.dim));
   $("#catModal").classList.add("on");setTimeout(()=>$("#catName").focus(),60);}
 $("#btnAddCat").onclick=()=>openCatModal(null);
-$("#catColor").oninput=e=>$("#catColorHex").value=e.target.value;
-$("#catColorHex").oninput=e=>{if(/^#[0-9a-f]{6}$/i.test(e.target.value))$("#catColor").value=e.target.value;};
-$("#catSave").onclick=()=>{const label=$("#catName").value.trim()||"Unbenannt";const color=$("#catColor").value;
-  if(editingCat){editingCat.label=label;editingCat.color=color;}else state.cats.push({id:uid(),label,color});
+$("#catSolo").onclick=()=>$("#catSolo").classList.toggle("on");
+$("#catDim").onclick=()=>$("#catDim").classList.toggle("on");
+$("#catColor").oninput=e=>{$("#catColorHex").value=e.target.value;buildIconPicker(catIconSel);};
+$("#catColorHex").oninput=e=>{if(/^#[0-9a-f]{6}$/i.test(e.target.value)){$("#catColor").value=e.target.value;buildIconPicker(catIconSel);}};
+$("#catSave").onclick=()=>{const label=$("#catName").value.trim()||"Unbenannt";const color=$("#catColor").value;const icon=catIconSel||undefined;
+  const solo=$("#catSolo").classList.contains("on"), dim=$("#catDim").classList.contains("on");
+  if(editingCat){editingCat.label=label;editingCat.color=color;
+    icon?editingCat.icon=icon:delete editingCat.icon;
+    solo?editingCat.solo=true:delete editingCat.solo;
+    dim?editingCat.dim=true:delete editingCat.dim;}
+  else{const nc={id:uid(),label,color};if(icon)nc.icon=icon;if(solo)nc.solo=true;if(dim)nc.dim=true;state.cats.push(nc);}
   $("#catModal").classList.remove("on");renderPins();};
 $("#catDelete").onclick=()=>{if(editingCat){const used=state.pins.some(p=>p.cat===editingCat.id)||state.zones.some(z=>z.cat===editingCat.id);
-  if(used&&!confirm("Objekte dieser Kategorie werden auf 'Sonstiges' verschoben. Fortfahren?"))return;
+  if(used&&!confirm(t("tCatMove")))return;
   const fb=state.cats.find(c=>c.id!==editingCat.id)?.id;
   state.pins.forEach(p=>{if(p.cat===editingCat.id)p.cat=fb;});state.zones.forEach(z=>{if(z.cat===editingCat.id)z.cat=fb;});
   state.cats=state.cats.filter(c=>c.id!==editingCat.id);}
@@ -737,25 +999,23 @@ function setTool(t){
   viewport.classList.toggle("drawing",tool==="area"||tool==="line"||tool==="measure");
   $("#measBox").classList.toggle("on",tool==="measure");
   if(tool==="measure"){updateMeasBox();}
-  const banner=$("#placeBanner");
-  if(tool==="pin"){$("#bannerText").textContent="▸ AUF DIE KARTE KLICKEN UM MARKER ZU SETZEN";banner.classList.add("on");}
-  else if(tool==="area"){$("#bannerText").textContent="▸ ECKPUNKTE KLICKEN • DOPPELKLICK / ENTER = SCHLIESSEN";banner.classList.add("on");}
-  else if(tool==="line"){$("#bannerText").textContent="▸ PUNKTE KLICKEN • DOPPELKLICK / ENTER = FERTIG";banner.classList.add("on");}
-  else if(tool==="measure"){$("#bannerText").textContent="▸ PUNKTE KLICKEN ZUM MESSEN • DOPPELKLICK = ENDE • ESC = ZURÜCKSETZEN";banner.classList.add("on");}
-  else banner.classList.remove("on");
+  const KEY={pin:"banPin",area:"banArea",line:"banLine",measure:"banMeasure"};
+  setBanner(KEY[tool]||null);
   drawZones();
 }
+let bannerKey=null;
+function setBanner(key){bannerKey=key||null;const b=$("#placeBanner");
+  if(bannerKey){$("#bannerText").textContent=t(bannerKey);b.classList.add("on");}else b.classList.remove("on");}
 $("#btnPin").onclick=()=>setTool("pin");
 $("#btnArea").onclick=()=>setTool("area");
 $("#btnLine").onclick=()=>setTool("line");
-$("#btnMeasure").onclick=()=>{if(!state.img){toast("Erst Karte laden");return;}setTool("measure");};
+$("#btnMeasure").onclick=()=>{if(!state.img){toast(t("tErstKarte"));return;}setTool("measure");};
 $("#measClear").onclick=()=>{measure=null;updateMeasBox();drawZones();};
 $("#measCal").onclick=()=>{
   if(state.mode!=="gm")return;
   if(tool!=="measure")setTool("measure");
   measure=null;calib={a:null,b:null,cursor:null};
-  $("#bannerText").textContent="▸ MASSSTAB EICHEN: ANFANG UND ENDE DES MASSSTABSBALKENS KLICKEN";
-  $("#placeBanner").classList.add("on");updateMeasBox();drawZones();
+  setBanner("banCal");updateMeasBox();drawZones();
 };
 let calPx=0;
 function openScaleModal(){
@@ -764,19 +1024,19 @@ function openScaleModal(){
   $("#scaleDist").value = state.scale?state.scale.ref:"";
   $("#scaleUnit").value = state.scale?state.scale.unit:"km";
   $("#scaleReset").style.display = state.scale?"":"none";
-  $("#scaleHint").textContent = `Markierte Strecke: ${Math.round(calPx)} Bildpunkte`;
+  $("#scaleHint").textContent = t("calHint", Math.round(calPx));
   $("#scaleModal").classList.add("on");$("#scaleDist").focus();
 }
 $("#scaleSave").onclick=()=>{
   const ref=parseFloat(($("#scaleDist").value||"").replace(",","."));
   const unit=($("#scaleUnit").value||"").trim()||"km";
-  if(!(ref>0)||!(calPx>0)){toast("Bitte gültige Länge eingeben");return;}
+  if(!(ref>0)||!(calPx>0)){toast(t("tValidLen"));return;}
   state.scale={unit,ref,perPx:ref/calPx,a:calib.a,b:calib.b};
   calib=null;$("#scaleModal").classList.remove("on");
-  $("#bannerText").textContent="▸ PUNKTE KLICKEN ZUM MESSEN • DOPPELKLICK = ENDE • ESC = ZURÜCKSETZEN";
-  updateMeasBox();drawZones();toast(`Maßstab geeicht: ${String(ref).replace(".",",")} ${unit}`);
+  setBanner("banMeasure");
+  updateMeasBox();drawZones();toast(t("tScaleOk",String(ref).replace(".",","),unit));
 };
-$("#scaleReset").onclick=()=>{state.scale=null;calib=null;$("#scaleModal").classList.remove("on");updateMeasBox();drawZones();toast("Eichung entfernt");};
+$("#scaleReset").onclick=()=>{state.scale=null;calib=null;$("#scaleModal").classList.remove("on");updateMeasBox();drawZones();toast(t("tScaleOff"));};
 $$("[data-close-scale]").forEach(b=>b.onclick=()=>{calib=null;$("#scaleModal").classList.remove("on");drawZones();});
 $("#scaleModal").addEventListener("pointerdown",e=>{if(e.target===$("#scaleModal")){calib=null;$("#scaleModal").classList.remove("on");drawZones();}});
 $("#placeCancel").onclick=()=>setTool(null);
@@ -787,7 +1047,7 @@ document.addEventListener("keydown",e=>{
   // Messen ist in beiden Modi verfügbar
   if(e.key==="m"||e.key==="M"){setTool("measure");return;}
   if(tool==="measure"){
-    if(e.key==="Escape"){if(calib){calib=null;$("#bannerText").textContent="▸ PUNKTE KLICKEN ZUM MESSEN • DOPPELKLICK = ENDE • ESC = ZURÜCKSETZEN";drawZones();}
+    if(e.key==="Escape"){if(calib){calib=null;setBanner("banMeasure");drawZones();}
       else if(measure){measure=null;updateMeasBox();drawZones();}else setTool(null);return;}
     if(e.key==="Backspace"&&measure&&measure.pts.length){measure.pts.pop();if(!measure.pts.length)measure=null;updateMeasBox();drawZones();return;}
     if(e.key==="Enter"&&measure){measure.done=true;updateMeasBox();drawZones();return;}
@@ -802,53 +1062,80 @@ document.addEventListener("keydown",e=>{
 });
 
 /* ---- mode ---- */
+function updateModeTag(){const m=state.mode;$("#modeTag").textContent=m==="gm"?t("modeGmTag"):t("modePlayerTag");}
 function setMode(m){state.mode=m;document.body.classList.toggle("player-mode",m==="player");
-  $("#modeTag").textContent=m==="gm"?"GM":"RUNNER";
+  updateModeTag();
   $("#modeTag").style.color=m==="gm"?"var(--magenta)":"var(--cyan)";$("#modeTag").style.borderColor=m==="gm"?"var(--magenta)":"var(--cyan)";
   $$(".mode-switch button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));
   const ed=(m==="gm");$("#brandTitle").contentEditable=ed;$("#brandSub").contentEditable=ed;
   if(m!=="gm")setTool(null); hidePopup();}
 $("#btnGm").onclick=()=>setMode("gm");$("#btnPlayer").onclick=()=>setMode("player");
 
+/* ---- mobile sidebar drawer ---- */
+const openDrawer=()=>document.body.classList.add("drawer-open");
+const closeDrawer=()=>document.body.classList.remove("drawer-open");
+$("#btnPanel").onclick=()=>document.body.classList.toggle("drawer-open");
+$("#drawerBackdrop").onclick=closeDrawer;
+
 /* ---- editable title / subtitle ---- */
-function renderTitle(){$("#brandTitle").textContent=state.title;$("#brandSub").textContent=state.subtitle;document.title=state.title||"SR Map";}
+function renderTitle(){$("#brandTitle").textContent=state.title;$("#brandSub").textContent=state.subtitle;document.title=state.title||"P&P Map";}
 function bindEditable(el,key,fallback){
-  el.addEventListener("input",()=>{state[key]=el.textContent.replace(/\n/g," ").trim();document.title=state.title||"SR Map";});
+  el.addEventListener("input",()=>{state[key]=el.textContent.replace(/\n/g," ").trim();document.title=state.title||"P&P Map";});
   el.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();el.blur();}if(e.key==="Escape"){el.textContent=state[key]||fallback;el.blur();}});
-  el.addEventListener("blur",()=>{if(!el.textContent.trim()){state[key]=fallback;el.textContent=fallback;}toast("Titel gespeichert");});
-  el.addEventListener("paste",e=>{e.preventDefault();const t=(e.clipboardData||window.clipboardData).getData("text").replace(/\n/g," ");document.execCommand("insertText",false,t);});
+  el.addEventListener("blur",()=>{if(!el.textContent.trim()){state[key]=fallback;el.textContent=fallback;}toast(t("tTitleSaved"));});
+  el.addEventListener("paste",e=>{e.preventDefault();const txt=(e.clipboardData||window.clipboardData).getData("text").replace(/\n/g," ");document.execCommand("insertText",false,txt);});
 }
-bindEditable($("#brandTitle"),"title","SR//HAMBURG");
-bindEditable($("#brandSub"),"subtitle","SIXTH WORLD GRID v3");
+bindEditable($("#brandTitle"),"title","PEN & PAPER");
+bindEditable($("#brandSub"),"subtitle","KARTEN-WERKZEUG");
 
 /* ---- themes ---- */
-const THEMES=[{id:"cyber",label:"Sixth World"},{id:"fantasy",label:"Fantasy"}];
+const THEMES=[{id:"cyber",key:"themeCyber"},{id:"fantasy",key:"themeFantasy"}];
 function applyTheme(){
-  const t=THEMES.find(x=>x.id===state.theme)||THEMES[0];state.theme=t.id;
-  THEMES.forEach(x=>document.body.classList.toggle("theme-"+x.id,x.id===t.id));
-  $("#themeLabel").textContent=t.label;
+  const th=THEMES.find(x=>x.id===state.theme)||THEMES[0];state.theme=th.id;
+  THEMES.forEach(x=>document.body.classList.toggle("theme-"+x.id,x.id===th.id));
+  $("#themeLabel").textContent=t(th.key);
 }
-$("#btnTheme").onclick=()=>{const i=THEMES.findIndex(x=>x.id===state.theme);state.theme=THEMES[(i+1)%THEMES.length].id;applyTheme();toast("Design: "+($("#themeLabel").textContent));};
+$("#btnTheme").onclick=()=>{const i=THEMES.findIndex(x=>x.id===state.theme);state.theme=THEMES[(i+1)%THEMES.length].id;applyTheme();toast(t("tTheme",$("#themeLabel").textContent));};
+
+/* ---- language ---- */
+function applyLang(){
+  document.documentElement.lang=state.lang;
+  $("#langLabel").textContent=state.lang.toUpperCase();
+  $$("[data-i18n]").forEach(el=>{el.textContent=t(el.getAttribute("data-i18n"));});
+  $$("[data-i18n-title]").forEach(el=>{el.title=t(el.getAttribute("data-i18n-title"));});
+  $$("[data-i18n-ph]").forEach(el=>{el.placeholder=t(el.getAttribute("data-i18n-ph"));});
+  applyTheme();updateModeTag();setBanner(bannerKey);updateMeasBox();
+  renderLegend();renderList();
+}
+$("#btnLang").onclick=()=>{
+  const prev=state.lang;state.lang=state.lang==="en"?"de":"en";
+  // relabel the subtitle only if it's still the untouched default
+  if(state.subtitle===I18N[prev].defSub){state.subtitle=I18N[state.lang].defSub;renderTitle();}
+  applyLang();toast(state.lang==="en"?"Language: English":"Sprache: Deutsch");
+};
 
 /* ---- zoom buttons ---- */
 const center=()=>{const r=viewport.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2];};
 $("#zIn").onclick=()=>zoomAt(...center(),1.25);$("#zOut").onclick=()=>zoomAt(...center(),0.8);$("#zFit").onclick=fitView;
 
 /* ---- import / export ---- */
-$("#btnExport").onclick=()=>{const data={version:3,title:state.title,subtitle:state.subtitle,theme:state.theme,scale:state.scale,map:state.img,imgW:state.imgW,imgH:state.imgH,cats:state.cats,pins:state.pins,zones:state.zones};
+$("#btnExport").onclick=()=>{
+  const cats=state.cats.map(c=>{const o={id:c.id,label:catLabel(c),color:c.color};if(c.icon)o.icon=c.icon;if(c.solo)o.solo=true;if(c.dim)o.dim=true;return o;});
+  const data={version:3,lang:state.lang,title:state.title,subtitle:state.subtitle,theme:state.theme,scale:state.scale,map:state.img,imgW:state.imgW,imgH:state.imgH,cats,pins:state.pins,zones:state.zones};
+  const fname=((state.title||"karte").replace(/[^\w\-]+/g,"_").replace(/^_+|_+$/g,"")||"karte").toLowerCase()+".json";
   const blob=new Blob([JSON.stringify(data)],{type:"application/json"});const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);a.download="shadowrun-hamburg.json";a.click();URL.revokeObjectURL(a.href);toast("Exportiert → shadowrun-hamburg.json");};
+  a.href=URL.createObjectURL(blob);a.download=fname;a.click();URL.revokeObjectURL(a.href);toast(t("tExportOk",fname));};
 $("#btnImport").onclick=()=>$("#fileJson").click();
 $("#fileJson").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{loadData(JSON.parse(r.result));toast("Daten geladen");}catch(err){toast("Ungültige JSON-Datei");}};r.readAsText(f);e.target.value="";});
+  r.onload=()=>{try{loadData(JSON.parse(r.result));toast(t("tDatenGeladen"));}catch(err){toast(t("tInvalidJson"));}};r.readAsText(f);e.target.value="";});
 
 /* ---- export as flattened JPG (map + visible markers/zones) ---- */
 function hexA(hex,a){const c=(hex||"#888888").replace("#","");return `rgba(${parseInt(c.substr(0,2),16)},${parseInt(c.substr(2,2),16)},${parseInt(c.substr(4,2),16)},${a})`;}
 function textColorFor(hex){const c=(hex||"#888888").replace("#","");const L=0.299*parseInt(c.substr(0,2),16)+0.587*parseInt(c.substr(2,2),16)+0.114*parseInt(c.substr(4,2),16);return L>150?"#0a0a0a":"#ffffff";}
 $("#btnImage").onclick=()=>{
-  if(!state.img||!state.imgW){toast("Erst Karte laden");return;}
-  toast("Erstelle Bild…");
-  setTimeout(()=>{try{renderImage();}catch(err){toast("Bild-Export fehlgeschlagen");}} ,30);
+  if(!state.img||!state.imgW){toast(t("tErstKarte"));return;}
+  toast(t("tBildErstelle"));
+  setTimeout(()=>{try{renderImage();}catch(err){toast(t("tBildFail"));}} ,30);
 };
 function renderImage(){
   const W=state.imgW,H=state.imgH;
@@ -874,31 +1161,51 @@ function renderImage(){
   const vis=state.pins.filter(p=>!state.hidden.has(p.cat)).slice().sort((a,b)=>a.y-b.y);
   vis.forEach(p=>{
     const c=catById(p.cat),px=p.x/100*W,py=p.y/100*H,hy=py-r*1.9;
-    ctx.save();ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=r*0.4;ctx.shadowOffsetY=r*0.12;
+    ctx.save();
+    if(c.dim)ctx.globalAlpha=0.5;
+    if(c.solo){
+      // symbol-only marker: solid teardrop (point at px,py) + large icon, no needle
+      const k=r/9.5, tx=px-15*k, ty=py-39*k, by=py-25.6*k;   // bulb centre
+      const td=new Path2D(TEARDROP);
+      ctx.save();ctx.translate(tx,ty);ctx.scale(k,k);
+      ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=(r*0.4)/k;ctx.shadowOffsetY=(r*0.12)/k;
+      ctx.fillStyle=c.color;ctx.fill(td);
+      ctx.shadowColor="transparent";ctx.lineWidth=1.6;ctx.strokeStyle="rgba(7,10,15,.85)";ctx.stroke(td);
+      ctx.restore();
+      if(c.icon&&ICONS[c.icon])drawIconCanvas(ctx,c.icon,textColorFor(c.color),px,by,r*2.0);
+      ctx.restore();return;
+    }
+    ctx.shadowColor="rgba(0,0,0,.5)";ctx.shadowBlur=r*0.4;ctx.shadowOffsetY=r*0.12;
     ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-r*0.6,hy+r*0.7);ctx.lineTo(px+r*0.6,hy+r*0.7);ctx.closePath();
     ctx.fillStyle=c.color;ctx.fill();
     ctx.beginPath();ctx.arc(px,hy,r,0,Math.PI*2);ctx.fillStyle=c.color;ctx.fill();
-    ctx.restore();
+    ctx.shadowColor="transparent";
     ctx.lineWidth=Math.max(1,r*0.12);ctx.strokeStyle="rgba(7,10,15,.85)";ctx.stroke();
-    const num=(p.name||"").trim().split(/\s+/)[0];
-    if(num){ctx.fillStyle=textColorFor(c.color);ctx.font=`700 ${r*1.0}px ${getComputedStyle(document.body).getPropertyValue('--disp')||'sans-serif'}`;
-      ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(num.length>4?num.slice(0,4):num,px,hy);}
+    if(c.icon&&ICONS[c.icon]){
+      drawIconCanvas(ctx,c.icon,textColorFor(c.color),px,hy,r*1.7);
+    }else{
+      const num=(p.name||"").trim().split(/\s+/)[0];
+      if(num){ctx.fillStyle=textColorFor(c.color);ctx.font=`700 ${r*1.0}px ${getComputedStyle(document.body).getPropertyValue('--disp')||'sans-serif'}`;
+        ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(num.length>4?num.slice(0,4):num,px,hy);}
+    }
+    ctx.restore();
   });
   const name=((state.title||"karte").replace(/[^\w\-]+/g,"_").replace(/^_+|_+$/g,"")||"karte")+".jpg";
-  cv.toBlob(b=>{if(!b){toast("Bild-Export fehlgeschlagen");return;}
+  cv.toBlob(b=>{if(!b){toast(t("tBildFail"));return;}
     const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast("Bild gespeichert → "+name);},"image/jpeg",0.92);
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(t("tBildOk",name));},"image/jpeg",0.92);
 }
 $("#btnClear").onclick=()=>{const n=state.pins.length+state.zones.length;
-  if(!n){toast("Nichts zu löschen");return;}
-  if(confirm(`Wirklich ALLE ${n} Objekte (Marker, Gebiete, Grenzen) löschen?`)){state.pins=[];state.zones=[];hidePopup();renderPins();toast("Alle Objekte gelöscht");}};
+  if(!n){toast(t("tNichts"));return;}
+  if(confirm(t("tConfirmClear",n))){state.pins=[];state.zones=[];hidePopup();renderPins();toast(t("tAlleWeg"));}};
 function loadData(d){if(d.cats&&d.cats.length)state.cats=d.cats;state.pins=d.pins||[];state.zones=d.zones||[];state.hidden.clear();
   measure=null;calib=null;
   state.scale=(d.scale&&d.scale.perPx>0)?d.scale:null;
+  if(d.lang==="de"||d.lang==="en")state.lang=d.lang;
   if(typeof d.title==="string")state.title=d.title;
   if(typeof d.subtitle==="string")state.subtitle=d.subtitle;
   if(typeof d.theme==="string")state.theme=d.theme;
-  renderTitle();applyTheme();
+  renderTitle();applyLang();
   if(d.map)loadImage(d.map);else renderPins();}
 
 /* ---- modal close ---- */
@@ -906,9 +1213,26 @@ $$("[data-close]").forEach(b=>b.onclick=()=>{closePinModal();$("#catModal").clas
 $$(".overlay").forEach(o=>o.addEventListener("pointerdown",e=>{if(e.target===o){closePinModal();o.classList.remove("on");}}));
 
 /* ---- auto-load for hosting ---- */
-(async function(){try{const res=await fetch("shadowrun-hamburg.json",{cache:"no-store"});if(res.ok){loadData(await res.json());}}catch(_){}})();
+/* ---- auto-load: URL-Parameter ?map=… / ?config=… / ?…json oder Geschwister-JSON ---- */
+(async function(){
+  let target=null;
+  try{
+    const params=new URLSearchParams(location.search);
+    target=params.get("map")||params.get("config")||params.get("json");
+    if(!target){
+      const raw=decodeURIComponent(location.search.slice(1)).split("&")[0];
+      if(/\.json(\?|#|$)/i.test(raw)) target=raw;          // z.B. ?example/essen-ruhrplex_v01.json
+    }
+  }catch(_){}
+  const candidates=target?[target]:["map.json","shadowrun-hamburg.json"];
+  for(const url of candidates){
+    try{const res=await fetch(url,{cache:"no-store"});if(res.ok){loadData(await res.json());return;}}
+    catch(_){}
+  }
+  if(target)toast(t("tLoadFail",target));
+})();
 
-renderTitle();applyTheme();setMode("gm");renderLegend();renderList();applyTransform();
+renderTitle();applyLang();setMode("player");applyTransform();
 </script>
 </body>
 </html>
