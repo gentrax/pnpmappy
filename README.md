@@ -42,6 +42,16 @@ Symbole für Kategorien
 
 > Tipp: Für eine reine Spieler-Ansicht den Link teilen und in den **Runner**-Modus wechseln lassen – Bearbeitungs-Buttons sind dort ausgeblendet.
 
+### Online
+Quelle so angeben:
+?map=https://www.hostitthere.de/essen-ruhrplex_v01.json (volle URL)
+?map=example_map/essen-ruhrplex_v01.json (relativer Pfad im eigenen Repo)
+?www.hostitthere.de/essen-ruhrplex_v01.json (ohne https:// — wird automatisch ergänzt)
+auch ?config= und ?json= als Alias
+aktives Beispiele:
+https://gentrax.github.io/pnpmappy/?map=example_map/essen-ruhrplex_v01.json
+https://gentrax.github.io/pnpmappy/?map=https://raw.githubusercontent.com/gentrax/pnpmappy/refs/heads/main/example_map/essen-ruhrplex_v01.json
+
 ---
 
 ## Bedienung
