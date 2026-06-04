@@ -6,7 +6,7 @@ Ursprünglich für eine Shadowrun-Hamburg-Kampagne gebaut, funktioniert das Tool
 
 > **Eine Datei, keine Installation.** Das gesamte Tool steckt in einer einzigen `.html`-Datei – einfach im Browser öffnen oder über GitHub Pages hosten.
 
-https://gentrax.github.io/pnpmappy/ hier kann getestet werden.
+https://gentrax.github.io/pnpmappy/ hier kann getestet werden, hier mit Beispiel Map https://gentrax.github.io/pnpmappy/?map=example_map/essen-ruhrplex_v01.json
 
 <img width="2003" height="896" alt="602962381-bfd21b0c-b564-4255-80f1-7557068b0405" src="https://github.com/user-attachments/assets/39721638-b0e0-4d75-a3ec-6c72d2dde3d8" />
 
