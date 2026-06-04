@@ -8,13 +8,13 @@ Ursprünglich für eine Shadowrun-Hamburg-Kampagne gebaut, funktioniert das Tool
 
 https://gentrax.github.io/pnpmappy/ hier kann getestet werden.
 
-<img width="2003" height="896" alt="image" src="https://github.com/user-attachments/assets/bfd21b0c-b564-4255-80f1-7557068b0405" />
+<img width="2003" height="896" alt="602962381-bfd21b0c-b564-4255-80f1-7557068b0405" src="https://github.com/user-attachments/assets/39721638-b0e0-4d75-a3ec-6c72d2dde3d8" />
 
 ---
 
 Symbole für Kategorien 
 
-<img width="416" height="515" alt="image" src="https://github.com/user-attachments/assets/9ee050ee-26c4-42e3-ae2e-92781fda2c79" />
+<img width="416" height="515" alt="602960255-9ee050ee-26c4-42e3-ae2e-92781fda2c79" src="https://github.com/user-attachments/assets/95123624-285d-4051-9625-c3b2a01f8be1" />
 
 ---
 
@@ -23,7 +23,7 @@ Symbole für Kategorien
 - **Karte laden** per Datei-Upload oder Drag-&-Drop (JPG/PNG)
 - **Marker** setzen, benennen, kategorisieren, mit Notiz versehen, verschieben & löschen
 - **Gebiete** (gefüllte Flächen) und **Grenzen / Linien** (gestrichelt) einzeichnen
-- **Legende** mit frei definierbaren Kategorien (Farbe + Ein-/Ausblenden je Kategorie)
+- **Legende** mit frei definierbaren Kategorien (Farbe + Ein-/Ausblenden je Kategorie und Symbolwahl)
 - **Distanzmessung** – einmalig am Maßstabsbalken eichen, dann über die ganze Karte messen
 - **Themes** umschaltbar: *Sixth World* (Cyberpunk) & *Fantasy* (Pergament/Gold)
 - **GM- und Runner-Modus** – Spieler:innen sehen eine reduzierte, nicht editierbare Ansicht
@@ -49,7 +49,7 @@ Quelle so angeben:
 - ?www.hostitthere.de/essen-ruhrplex_v01.json (ohne https:// — wird automatisch ergänzt)
 - auch ?config= und ?json= als Alias
   
-aktives Beispiele:
+Aktive Beispiele:
 - https://gentrax.github.io/pnpmappy/?map=example_map/essen-ruhrplex_v01.json
 - https://gentrax.github.io/pnpmappy/?map=https://raw.githubusercontent.com/gentrax/pnpmappy/refs/heads/main/example_map/essen-ruhrplex_v01.json
 
