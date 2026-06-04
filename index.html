@@ -462,7 +462,7 @@ const I18N={
   tMarkDel:"Marker gelöscht", tAreaDel:"Gebiet gelöscht", tLineDel:"Grenze gelöscht", tMarkMove:"Marker verschoben",
   tMin3:"Mind. 3 Punkte nötig", tMin2:"Mind. 2 Punkte nötig", tTitleSaved:"Titel gespeichert",
   tScaleOk:(ref,unit)=>`Maßstab geeicht: ${ref} ${unit}`, tScaleOff:"Eichung entfernt", tValidLen:"Bitte gültige Länge eingeben",
-  tLoadFail:tg=>`Karte konnte nicht geladen werden: ${tg}`, tCatMove:"Objekte dieser Kategorie werden auf 'Sonstiges' verschoben. Fortfahren?",
+  tLoadFail:tg=>`Laden fehlgeschlagen: ${tg} (URL/CORS prüfen)`, tCatMove:"Objekte dieser Kategorie werden auf 'Sonstiges' verschoben. Fortfahren?",
   tTheme:l=>`Design: ${l}`, calHint:px=>`Markierte Strecke: ${px} Bildpunkte`,
   themeCyber:"Cyber", themeFantasy:"Fantasy", defSub:"KARTEN-WERKZEUG",
  },
@@ -506,7 +506,7 @@ const I18N={
   tMarkDel:"Marker deleted", tAreaDel:"Area deleted", tLineDel:"Border deleted", tMarkMove:"Marker moved",
   tMin3:"At least 3 points needed", tMin2:"At least 2 points needed", tTitleSaved:"Title saved",
   tScaleOk:(ref,unit)=>`Scale calibrated: ${ref} ${unit}`, tScaleOff:"Calibration removed", tValidLen:"Please enter a valid length",
-  tLoadFail:tg=>`Could not load map: ${tg}`, tCatMove:"Objects of this category will be moved to 'Misc'. Continue?",
+  tLoadFail:tg=>`Load failed: ${tg} (check URL/CORS)`, tCatMove:"Objects of this category will be moved to 'Misc'. Continue?",
   tTheme:l=>`Theme: ${l}`, calHint:px=>`Marked distance: ${px} pixels`,
   themeCyber:"Cyber", themeFantasy:"Fantasy", defSub:"MAP TOOL",
  }
@@ -1220,11 +1220,21 @@ $$(".overlay").forEach(o=>o.addEventListener("pointerdown",e=>{if(e.target===o){
     const params=new URLSearchParams(location.search);
     target=params.get("map")||params.get("config")||params.get("json");
     if(!target){
-      const raw=decodeURIComponent(location.search.slice(1)).split("&")[0];
-      if(/\.json(\?|#|$)/i.test(raw)) target=raw;          // z.B. ?example/essen-ruhrplex_v01.json
+      const raw=decodeURIComponent(location.search.replace(/^\?/,""));
+      const first=raw.split("&")[0];
+      if(/^https?:\/\//i.test(raw)) target=raw;                 // ?https://host/map.json
+      else if(/\.json(\?|#|$)/i.test(first)) target=first;      // ?example_map/essen-ruhrplex_v01.json
     }
   }catch(_){}
-  const candidates=target?[target]:["map.json","shadowrun-hamburg.json"];
+  // turn a bare domain / protocol-relative target into a fetchable absolute URL
+  function normUrl(u){
+    if(!u) return u;
+    if(/^https?:\/\//i.test(u)) return u;                       // already absolute
+    if(/^\/\//.test(u)) return location.protocol+u;             // //host/map.json
+    if(/^[\w-]+(\.[\w-]+)+\//.test(u)) return "https://"+u;     // www.host.de/map.json -> add https://
+    return u;                                                   // relative path (same origin)
+  }
+  const candidates=target?[normUrl(target)]:["map.json","shadowrun-hamburg.json"];
   for(const url of candidates){
     try{const res=await fetch(url,{cache:"no-store"});if(res.ok){loadData(await res.json());return;}}
     catch(_){}
