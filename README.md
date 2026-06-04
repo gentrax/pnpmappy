@@ -11,6 +11,7 @@ https://gentrax.github.io/pnpmappy/ hier kann getestet werden.
 <img width="2556" height="902" alt="image" src="https://github.com/user-attachments/assets/5054c670-d11f-440b-8a15-fdd68ebf5a8a" />
 
 Symbole für Kategorien 
+
 <img width="416" height="515" alt="image" src="https://github.com/user-attachments/assets/9ee050ee-26c4-42e3-ae2e-92781fda2c79" />
 
 ---
