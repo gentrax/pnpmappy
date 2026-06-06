@@ -53,27 +53,18 @@ Aktive Beispiele:
 - https://gentrax.github.io/pnpmappy/?map=example_map/essen-ruhrplex_v01.json
 - https://gentrax.github.io/pnpmappy/?map=https://raw.githubusercontent.com/gentrax/pnpmappy/refs/heads/main/example_map/essen-ruhrplex_v01.json
 
-1. Per URL-Parameter (empfohlen, am eindeutigsten)
-Drei gleichwertige Parameternamen — map, config, json:
-
-
-index.html?map=shadowrun_maps/wildost_v02.json
-index.html?config=dnd_maps/faerun-schwertkueste_v01.json
-index.html?json=example_map/essen-ruhrplex_v01.json
-2. Query-String ohne Parametername (Kurzform)
-Wird automatisch erkannt, wenn der String auf .json endet:
-
-
-index.html?example_map/essen-ruhrplex_v01.json
-index.html?shadowrun_maps/sr_-_hamburg.json
-3. Externe / absolute URLs
-Funktioniert in allen vier Schreibweisen (siehe normUrl):
-
-
-index.html?map=https://host.de/karte.json     ← volle URL
-index.html?https://host.de/karte.json         ← volle URL als Kurzform
-index.html?map=//host.de/karte.json           ← protokoll-relativ
-index.html?map=www.host.de/karte.json         ← nackte Domain (https:// wird ergänzt)
+#### Per URL-Parameter (empfohlen, am eindeutigsten) Drei gleichwertige Parameternamen — map, config, json:
+- index.html?map=shadowrun_maps/wildost_v02.json
+- index.html?config=dnd_maps/faerun-schwertkueste_v01.json
+- index.html?json=example_map/essen-ruhrplex_v01.json
+#### 2. Query-String ohne Parametername (Kurzform) Wird automatisch erkannt, wenn der String auf .json endet:
+- index.html?example_map/essen-ruhrplex_v01.json
+- index.html?shadowrun_maps/sr_-_hamburg.json
+#### 3. Externe / absolute URLs Funktioniert in allen vier Schreibweisen (siehe normUrl):
+- index.html?map=https://host.de/karte.json     ← volle URL
+- index.html?https://host.de/karte.json         ← volle URL als Kurzform
+- index.html?map=//host.de/karte.json           ← protokoll-relativ
+- index.html?map=www.host.de/karte.json         ← nackte Domain (https:// wird ergänzt)
 
 ---
 
